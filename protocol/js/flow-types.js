@@ -52,6 +52,11 @@ function _channelMapRpcHelper(channelConfig: ChannelConfig<*>, partialRpcCall: (
   return channelMap
 }
 
+export const BackendCommonBlockType = {
+  data: 0,
+  md: 1,
+}
+
 export const CommonClientType = {
   none: 0,
   cli: 1,
@@ -2806,6 +2811,7 @@ export type BinaryKID = bytes
 export type BlockIdCombo = {
   blockHash: string,
   chargedTo: UID,
+  blockType: BlockType,
 }
 
 export type BlockRefNonce = any
@@ -2820,6 +2826,10 @@ export type BlockReferenceCount = {
   ref: BlockReference,
   liveCount: int,
 }
+
+export type BlockType = 
+    0 // DATA_0
+  | 1 // MD_1
 
 export type BoxNonce = any
 
