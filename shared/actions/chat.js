@@ -907,7 +907,7 @@ function _maybeAddTimestamp (message: Message, prevMessage: Message): MaybeTimes
     return {
       type: 'Timestamp',
       timestamp: message.timestamp,
-      key: message.timestamp,
+      key: `timestamp:${message.timestamp}`,
     }
   }
   return null
@@ -930,7 +930,7 @@ const _temporaryAttachmentMessageForUpload = (convID: ConversationIDKey, usernam
   outboxID,
   progress: 0, /* between 0 - 1 */
   messageState: 'uploading',
-  key: `temp-${outboxID}`,
+  key: `tempAttachment:${outboxID}`,
 })
 
 function _unboxedToMessage (message: MessageUnboxed, idx: number, yourName, yourDeviceName, conversationIDKey: ConversationIDKey): Message {
@@ -1024,7 +1024,7 @@ function _unboxedToMessage (message: MessageUnboxed, idx: number, yourName, your
   return {
     type: 'Error', // TODO
     messageID: idx,
-    key: idx,
+    key: `error:${idx}`,
     timestamp: Date.now(),
     reason: 'temp',
     conversationIDKey: conversationIDKey,
