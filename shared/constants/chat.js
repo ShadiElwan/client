@@ -44,7 +44,7 @@ export type TextMessage = {
   messageState: MessageState,
   outboxID?: ?OutboxIDKey,
   senderDeviceRevokedAt: ?number,
-  key: any,
+  key: MessageKey,
 }
 
 export type ErrorMessage = {
@@ -53,7 +53,7 @@ export type ErrorMessage = {
   timestamp: number,
   conversationIDKey: ConversationIDKey,
   messageID: MessageID,
-  key: any,
+  key: MessageKey,
 }
 
 export type UnhandledMessage = {
@@ -61,7 +61,7 @@ export type UnhandledMessage = {
   timestamp: number,
   conversationIDKey: ConversationIDKey,
   messageID: MessageID,
-  key: any,
+  key: MessageKey,
 }
 
 export type AttachmentSize = {
@@ -89,19 +89,19 @@ export type AttachmentMessage = {
   progress?: number, /* between 0 - 1 */
   messageState: AttachmentMessageState,
   senderDeviceRevokedAt: ?number,
-  key: any,
+  key: MessageKey,
 }
 
 export type TimestampMessage = {
   type: 'Timestamp',
   timestamp: number,
-  key: any,
+  key: MessageKey,
 }
 
 export type DeletedMessage = {
   type: 'Deleted',
   timestamp: number,
-  key: any,
+  key: MessageKey,
   messageID: MessageID,
   deletedIDs: Array<MessageID>,
 }
@@ -391,12 +391,19 @@ function parseMetadataPreviewSize (metadata: AssetMetadata): ?AttachmentSize {
   }
 }
 
+type MessageKey = string
+type MessageKeyKind = 'messageID' | 'outboxID' | 'tempAttachment' | 'timestamp' | 'error'
+function messageKey(kind: MessageKeyKind, value: string | number): MessageKey {
+  return `${kind}:${value}`
+}
+
 export {
   getBrokenUsers,
   conversationIDToKey,
   keyToConversationID,
   keyToOutboxID,
   makeSnippet,
+  messageKey,
   outboxIDToKey,
   participantFilter,
   serverMessageToMessageBody,

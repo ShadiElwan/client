@@ -436,7 +436,7 @@ function * _postMessage (action: PostMessage): SagaGenerator<any, any> {
       type: 'Text',
       author,
       outboxID,
-      key: outboxID,
+      key: Constants.messageKey('outboxID', outboxID),
       timestamp: Date.now(),
       messageState: hasPendingFailure ? 'failed' : 'pending',
       message: new HiddenString(action.payload.text.stringValue()),
@@ -907,7 +907,7 @@ function _maybeAddTimestamp (message: Message, prevMessage: Message): MaybeTimes
     return {
       type: 'Timestamp',
       timestamp: message.timestamp,
-      key: `timestamp:${message.timestamp}`,
+      key: Constants.messageKey('timestamp', message.timestamp),
     }
   }
   return null
@@ -930,7 +930,7 @@ const _temporaryAttachmentMessageForUpload = (convID: ConversationIDKey, usernam
   outboxID,
   progress: 0, /* between 0 - 1 */
   messageState: 'uploading',
-  key: `tempAttachment:${outboxID}`,
+  key: Constants.messageKey('tempAttachment', outboxID),
 })
 
 function _unboxedToMessage (message: MessageUnboxed, idx: number, yourName, yourDeviceName, conversationIDKey: ConversationIDKey): Message {
@@ -946,7 +946,7 @@ function _unboxedToMessage (message: MessageUnboxed, idx: number, yourName, your
       conversationIDKey,
       deviceName: yourDeviceName,
       deviceType: isMobile ? 'mobile' : 'desktop',
-      key: payload.outboxID,
+      key: Constants.messageKey('outboxID', payload.outboxID),
       message: new HiddenString(messageText && messageText.body || ''),
       messageState,
       outboxID: outboxIDToKey(payload.outboxID),
@@ -979,7 +979,7 @@ function _unboxedToMessage (message: MessageUnboxed, idx: number, yourName, your
             message: new HiddenString(payload.messageBody && payload.messageBody.text && payload.messageBody.text.body || ''),
             messageState: 'sent', // TODO, distinguish sent/pending once CORE sends it.
             outboxID,
-            key: common.messageID,
+            key: Constants.messageKey('messageID', common.messageID),
           }
         case CommonMessageType.attachment:
           // $FlowIssue
@@ -1000,20 +1000,20 @@ function _unboxedToMessage (message: MessageUnboxed, idx: number, yourName, your
             hdPreviewPath: null,
             previewSize,
             downloadedPath: null,
-            key: common.messageID,
+            key: Constants.messageKey('messageID', common.messageID),
           }
         case CommonMessageType.delete:
           return {
             type: 'Deleted',
             timestamp: payload.serverHeader.ctime,
             messageID: payload.serverHeader.messageID,
-            key: payload.serverHeader.messageID,
+            key: Constants.messageKey('messageID', payload.serverHeader.messageID),
             deletedIDs: payload.messageBody.delete && payload.messageBody.delete.messageIDs || [],
           }
         default:
           const unhandled: UnhandledMessage = {
             ...common,
-            key: common.messageID,
+            key: Constants.messageKey('messageID', common.messageID),
             type: 'Unhandled',
           }
           return unhandled
@@ -1024,7 +1024,7 @@ function _unboxedToMessage (message: MessageUnboxed, idx: number, yourName, your
   return {
     type: 'Error', // TODO
     messageID: idx,
-    key: `error:${idx}`,
+    key: Constants.messageKey('error', idx),
     timestamp: Date.now(),
     reason: 'temp',
     conversationIDKey: conversationIDKey,
