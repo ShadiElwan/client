@@ -2054,6 +2054,13 @@
           "type": "string"
         },
         {
+          "name": "oneChatPerTLF",
+          "type": [
+            null,
+            "bool"
+          ]
+        },
+        {
           "name": "identifyBehavior",
           "type": "keybase1.TLFIdentifyBehavior"
         }
